@@ -46,7 +46,7 @@
 
 ### ⚙️ Quick Start
 
-1. **Get your License Key:** Visit our [Official Website](#) to configure your deployment goal and obtain an authorization key.
+1. 1. **Obtain your License Key:** Visit our [AI Pre-sales Assistant](https://52.206.140.53:13221) to communicate your deployment requirements and obtain your exclusive serial number.
 2. **Run the Client:**
    * **Windows:** Execute `client_win.bat` as Administrator.
    * **Linux:** Execute `sudo bash client_lin.sh`
@@ -86,7 +86,7 @@ This tool is strictly designed for legitimate infrastructure provisioning. **Zer
 
 ### ⚙️ 快速开始
 
-1. **获取授权密钥：** 访问我们的 [官方网站](#) 与 AI 售前助理沟通您的部署需求，获取专属序列号。
+1. **获取授权密钥：** 访问我们的 [AI 售前助理](https://52.206.140.53:13221) 与 AI 售前助理沟通您的部署需求，获取专属序列号。
 2. **启动本地智能体：**
    * **Windows 环境：** 右键以管理员身份运行 `client_win.bat`（系统将引导您创建安全还原点）。
    * **Linux 环境：** 执行 `sudo bash client_lin.sh`。

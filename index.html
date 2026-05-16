@@ -1,0 +1,487 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SecureOps-Agent | Adaptive Automation</title>
+    <style>
+        /* Base Styles & Variables */
+        :root {
+            --bg-dark: #0a0a0a;
+            --bg-panel: #111111;
+            --text-main: #ededed;
+            --text-muted: #888888;
+            --accent: #33bbff;
+            --accent-hover: #0088cc;
+            --term-bg: #000000;
+            --term-green: #33ff00;
+            --term-red: #ff3333;
+            --term-blue: #33bbff;
+            --term-yellow: #ffcc00;
+            --chat-user: #0070f3;
+            --chat-ai: #2a2a2a;
+        }
+
+        body, html { margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; background-color: var(--bg-dark); color: var(--text-main); line-height: 1.6; overflow-x: hidden; }
+        
+        * { box-sizing: border-box; }
+        
+        a { color: var(--text-main); text-decoration: none; }
+        
+        .container { max-width: 1200px; margin: 0 auto; padding: 0 20px; }
+
+        /* Navigation */
+        nav { display: flex; justify-content: space-between; align-items: center; padding: 20px 0; border-bottom: 1px solid #333; }
+        .logo { display: flex; align-items: center; gap: 12px; font-size: 1.6rem; font-weight: 700; letter-spacing: -0.5px; color: #fff;}
+        /* 针对那个蓝色的盾牌做了一点发光处理，匹配其原生质感 */
+        .logo-img { height: 42px; width: 42px; border-radius: 50%; object-fit: cover; box-shadow: 0 0 15px rgba(51, 187, 255, 0.4); border: 1px solid rgba(51, 187, 255, 0.3);}
+        .nav-actions { display: flex; gap: 15px; align-items: center; }
+        .btn-lang { background: transparent; border: 1px solid #555; color: white; padding: 6px 12px; border-radius: 6px; cursor: pointer; font-size: 0.9rem; transition: 0.2s; }
+        .btn-lang:hover { border-color: var(--text-main); }
+        .btn-primary { background: var(--text-main); color: var(--bg-dark); padding: 8px 16px; border-radius: 6px; font-weight: 600; font-size: 0.9rem; transition: 0.2s; border: none; cursor: pointer;}
+        .btn-primary:hover { background: #cccccc; }
+
+        /* Hero Section */
+        .hero { padding: 80px 0 60px; display: flex; align-items: center; gap: 50px; flex-wrap: wrap; }
+        .hero-content { flex: 1; min-width: 350px; }
+        .hero h1 { font-size: 3.5rem; line-height: 1.1; margin-bottom: 20px; letter-spacing: -1px; }
+        .hero p { font-size: 1.2rem; color: var(--text-muted); margin-bottom: 30px; max-width: 90%; }
+        .hero-visual { flex: 1; min-width: 350px; }
+
+        /* Terminal UI Simulation */
+        .mac-window { background: var(--term-bg); border-radius: 10px; border: 1px solid #333; overflow: hidden; box-shadow: 0 20px 40px rgba(0,0,0,0.5); font-family: 'Courier New', Courier, monospace; font-size: 0.85rem; }
+        .mac-header { background: #222; padding: 10px 15px; display: flex; gap: 8px; align-items: center; }
+        .mac-dot { width: 12px; height: 12px; border-radius: 50%; }
+        .mac-dot.r { background: #ff5f56; }
+        .mac-dot.y { background: #ffbd2e; }
+        .mac-dot.g { background: #27c93f; }
+        .mac-title { flex: 1; text-align: center; color: #888; font-size: 0.8rem; font-family: sans-serif;}
+        .mac-body { padding: 20px; color: #ddd; height: 350px; overflow-y: hidden; position: relative; }
+        
+        .t-line { margin-bottom: 6px; opacity: 0; animation: fadeIn 0.1s forwards; }
+        .t-green { color: var(--term-green); }
+        .t-red { color: var(--term-red); }
+        .t-blue { color: var(--term-blue); }
+        .t-yellow { color: var(--term-yellow); }
+        .t-dim { color: #666; }
+
+        @keyframes fadeIn { to { opacity: 1; } }
+
+        /* Real Execution Gallery Section (新增的真实截图轮询模块) */
+        .gallery-block { padding: 80px 0; border-top: 1px solid #222; text-align: center; }
+        .gallery-block h2 { font-size: 2.2rem; margin-bottom: 15px; }
+        .gallery-block p { color: var(--text-muted); font-size: 1.1rem; max-width: 800px; margin: 0 auto 40px; }
+        .gallery-carousel { position: relative; width: 100%; max-width: 1000px; margin: 0 auto; height: 600px; border-radius: 10px; overflow: hidden; border: 1px solid #333; box-shadow: 0 15px 40px rgba(0,0,0,0.6); background: #080808; display: flex; justify-content: center; align-items: center; }
+        .gallery-carousel img { max-width: 100%; max-height: 100%; object-fit: contain; opacity: 1; transition: opacity 0.6s ease-in-out; }
+        .gallery-carousel img.fade-out { opacity: 0; }
+        .gallery-loader { position: absolute; color: var(--text-muted); font-family: monospace; font-size: 0.9rem; z-index: 0; }
+
+        /* Feature Sections */
+        .feature-block { padding: 80px 0; border-top: 1px solid #222; display: flex; gap: 50px; align-items: center; flex-wrap: wrap; }
+        .feature-block.reverse { flex-direction: row-reverse; }
+        .feature-text { flex: 1; min-width: 350px; }
+        .feature-text h2 { font-size: 2.2rem; margin-bottom: 15px; }
+        .feature-text p { color: var(--text-muted); font-size: 1.1rem; }
+        .feature-visual { flex: 1; min-width: 350px; position: relative; }
+
+        /* Badge for Stress Test */
+        .stress-badge { position: absolute; top: -15px; right: 20px; background: var(--term-yellow); color: #000; padding: 4px 12px; border-radius: 4px; font-weight: bold; font-size: 0.8rem; font-family: sans-serif; z-index: 10; box-shadow: 0 4px 10px rgba(255,204,0,0.3); }
+
+        /* Chat UI Simulation */
+        .chat-ui { background: var(--bg-panel); border: 1px solid #333; border-radius: 10px; height: 350px; display: flex; flex-direction: column; }
+        .chat-body { padding: 20px; flex: 1; display: flex; flex-direction: column; gap: 15px; overflow-y: hidden; }
+        .chat-msg { max-width: 80%; padding: 12px 16px; border-radius: 8px; font-size: 0.9rem; animation: slideIn 0.3s forwards; opacity: 0; transform: translateY(10px); }
+        .chat-msg.user { align-self: flex-end; background: var(--chat-user); color: white; border-bottom-right-radius: 0; }
+        .chat-msg.ai { align-self: flex-start; background: var(--chat-ai); color: #ddd; border-bottom-left-radius: 0; border: 1px solid #444; }
+
+        @keyframes slideIn { to { opacity: 1; transform: translateY(0); } }
+
+        /* Footer */
+        footer { padding: 40px 0; border-top: 1px solid #222; text-align: center; color: var(--text-muted); font-size: 0.9rem; }
+        .footer-links { display: flex; justify-content: center; gap: 20px; margin-bottom: 20px; }
+        .footer-links a:hover { color: var(--text-main); }
+
+        @media (max-width: 768px) {
+            .hero h1 { font-size: 2.5rem; }
+            .feature-block, .feature-block.reverse { flex-direction: column; gap: 30px; }
+            .gallery-carousel { height: 300px; }
+        }
+    </style>
+</head>
+<body>
+
+    <nav class="container">
+        <div class="logo">
+            <img src="img/logo.jpg" alt="SecureOps-Agent Logo" class="logo-img" onerror="this.style.display='none'">
+            SecureOps-Agent
+        </div>
+        <div class="nav-actions">
+            <button class="btn-lang" onclick="toggleLanguage()" id="langBtn">🌐 中文 / EN</button>
+            <button class="btn-primary" data-i18n="nav_login">Get Started</button>
+        </div>
+    </nav>
+
+    <!-- Block 1: Hero -->
+    <section class="container hero">
+        <div class="hero-content">
+            <h1 data-i18n="hero_title">Adaptive Deployment Agent</h1>
+            <p data-i18n="hero_desc">Translate natural language into executable, self-healing environment deployments. Built-in cross-platform defenses safeguard every infrastructure build.</p>
+            <button class="btn-primary" style="padding: 12px 24px; font-size: 1.1rem; background: var(--accent); color: white;" data-i18n="hero_cta">Deploy Now</button>
+        </div>
+        <div class="hero-visual">
+            <div class="mac-window">
+                <div class="mac-header">
+                    <div class="mac-dot r"></div><div class="mac-dot y"></div><div class="mac-dot g"></div>
+                    <div class="mac-title">agent_execution_log.sh</div>
+                </div>
+                <div class="mac-body" id="term-hero"></div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Block 1.5: Real-world Execution Gallery (新增轮询截图模块) -->
+    <section class="container gallery-block">
+        <h2 data-i18n="gal_title">Real-world Execution Records</h2>
+        <p data-i18n="gal_desc">Witness the agent in action. Automatically syncing and displaying authentic, unmodified execution screenshots from production environments.</p>
+        <div class="gallery-carousel">
+            <div class="gallery-loader" id="gal-loader">Initializing Data Stream...</div>
+            <img id="carousel-img" src="" alt="Execution Record" style="z-index: 1;">
+        </div>
+    </section>
+
+    <!-- Block 2: Intent-based Security Audit -->
+    <section class="container feature-block reverse">
+        <div class="feature-text">
+            <h2 data-i18n="sec_title">Semantic Security Firewall</h2>
+            <p data-i18n="sec_desc">We abandon rigid regex blocking. Our engine reads contextual intent. We subject our agent to intense adversarial stress tests to ensure it only permits commands strictly aligned with the deployment goal, effectively neutralizing privilege escalation and masqueraded payloads.</p>
+        </div>
+        <div class="feature-visual">
+            <div class="stress-badge" data-i18n="sec_badge">⚠️ STRESS TEST SIMULATION</div>
+            <div class="mac-window">
+                <div class="mac-header">
+                    <div class="mac-dot r"></div><div class="mac-dot y"></div><div class="mac-dot g"></div>
+                    <div class="mac-title">security_audit_test.ps1</div>
+                </div>
+                <div class="mac-body" id="term-security" style="height: 380px;"></div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Block 3: Self-Healing -->
+    <section class="container feature-block">
+        <div class="feature-text">
+            <h2 data-i18n="heal_title">Autonomous Error Resolution</h2>
+            <p data-i18n="heal_desc">Production environments are unpredictable. When encountering dependency conflicts or read-only locks, the agent dynamically adjusts its strategy, breaking down operations into safer sub-tasks to ensure reliable delivery without manual intervention.</p>
+        </div>
+        <div class="feature-visual">
+            <div class="mac-window">
+                <div class="mac-header">
+                    <div class="mac-dot r"></div><div class="mac-dot y"></div><div class="mac-dot g"></div>
+                    <div class="mac-title">self_healing_routine.log</div>
+                </div>
+                <div class="mac-body" id="term-heal"></div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Block 4: Privacy & Backups -->
+    <section class="container feature-block reverse">
+        <div class="feature-text">
+            <h2 data-i18n="priv_title">Zero-Trust & Snapshots</h2>
+            <p data-i18n="priv_desc">Sensitive credentials flow ephemerally within local memory variables via mTLS tunnels—never touching the disk or cloud. Combined with automated pre-deployment configuration snapshots, you retain full rollback capabilities.</p>
+        </div>
+        <div class="feature-visual">
+            <div class="chat-ui">
+                <div class="mac-header" style="border-bottom: 1px solid #333;">
+                    <div class="mac-title" style="color: #ccc; text-align: left;" data-i18n="chat_header">🔐 Auth Required</div>
+                </div>
+                <div class="chat-body" id="chat-privacy">
+                    <!-- Populated by JS -->
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="footer-links">
+                <a href="legal.html#tos" data-i18n="foot_tos">Terms of Service</a>
+                <a href="legal.html#privacy" data-i18n="foot_privacy">Privacy Policy</a>
+                <a href="legal.html#refund" data-i18n="foot_refund">Refund Policy</a>
+            </div>
+            <div style="margin-bottom: 10px;" data-i18n="foot_contact">Contact & Support: you_main@outlook.com (Mon-Fri 9:00-18:00)</div>
+            <div>&copy; 2026 SecureOps-Agent. All rights reserved.</div>
+        </div>
+    </footer>
+
+    <script>
+        // ================= Language Data =================
+        const i18n = {
+            en: {
+                nav_login: "Get Started",
+                hero_title: "Adaptive Deployment Agent",
+                hero_desc: "Translate natural language into executable, self-healing environment deployments. Built-in cross-platform defenses safeguard every infrastructure build.",
+                hero_cta: "Deploy Now",
+                gal_title: "Real-world Execution Records",
+                gal_desc: "Witness the agent in action. Automatically syncing and displaying authentic, unmodified execution screenshots from production environments.",
+                sec_title: "Semantic Security Firewall",
+                sec_desc: "We abandon rigid regex blocking. Our engine reads contextual intent. We subject our agent to intense adversarial stress tests to ensure it only permits commands strictly aligned with the deployment goal, effectively neutralizing privilege escalation and masqueraded payloads.",
+                sec_badge: "⚠️ STRESS TEST SIMULATION",
+                heal_title: "Autonomous Error Resolution",
+                heal_desc: "Production environments are unpredictable. When encountering dependency conflicts or read-only locks, the agent dynamically adjusts its strategy, breaking down operations into safer sub-tasks to ensure reliable delivery without manual intervention.",
+                priv_title: "Zero-Trust & Snapshots",
+                priv_desc: "Sensitive credentials flow ephemerally within local memory variables via mTLS tunnels—never touching the disk or cloud. Combined with automated pre-deployment configuration snapshots, you retain full rollback capabilities.",
+                chat_header: "🔐 Local Agent Interface",
+                foot_tos: "Terms of Service",
+                foot_privacy: "Privacy Policy",
+                foot_refund: "Refund Policy",
+                foot_contact: "Contact & Support: you_main@outlook.com (Mon-Fri 9:00-18:00)"
+            },
+            zh: {
+                nav_login: "开始使用",
+                hero_title: "自适应环境部署智能体",
+                hero_desc: "将自然语言转化为可落地的自动化部署方案。内置跨平台防线与环境自适应能力，护航每一次基础设施构建。",
+                hero_cta: "立即部署",
+                gal_title: "系统真实运行全记录",
+                gal_desc: "见证智能体的真实工作流。此区块自动同步并滚动展示来自生产环境、未经修饰的原始执行截图日志。",
+                sec_title: "语义级意图防线",
+                sec_desc: "摒弃死板的正则拦截。我们通过极限对抗级别的压力测试（Stress Test），向您证明我们的引擎能读懂上下文意图。仅放行与部署任务严格一致的必要指令，从根本上免疫越权破坏与伪装代码注入。",
+                sec_badge: "⚠️ 极端压力测试演示",
+                heal_title: "韧性部署与异常自愈",
+                heal_desc: "生产环境错综复杂。遇到依赖冲突、网络阻断或权限锁定等异常时，智能体将自动重组策略，将高风险操作降解为安全子任务，以确保部署链路的高可用交付。",
+                priv_title: "零信任凭证与安全快照",
+                priv_desc: "敏感凭证仅通过 mTLS 加密隧道在本地内存环境变量中瞬间流转，绝不落盘、绝不上云。配合执行前的自动化平衡型快照备份，确保您随时拥有安全回滚的权利。",
+                chat_header: "🔐 本地探针交互界面",
+                foot_tos: "服务条款",
+                foot_privacy: "隐私政策",
+                foot_refund: "退款政策",
+                foot_contact: "联系我们: you_main@outlook.com (周一至周五 9:00-18:00)"
+            }
+        };
+
+        let currentLang = 'en';
+
+        function toggleLanguage() {
+            currentLang = currentLang === 'en' ? 'zh' : 'en';
+            document.querySelectorAll('[data-i18n]').forEach(el => {
+                const key = el.getAttribute('data-i18n');
+                if (i18n[currentLang][key]) {
+                    el.innerText = i18n[currentLang][key];
+                }
+            });
+            restartAnimations();
+        }
+
+        // ================= Image Gallery Carousel Logic =================
+        let imgIndex = 1;
+        let maxFound = false;
+        let maxImageIndex = 999; 
+        const imgEl = document.getElementById('carousel-img');
+        const loaderEl = document.getElementById('gal-loader');
+
+        // Initial Load
+        const firstImg = new Image();
+        firstImg.onload = function() {
+            imgEl.src = this.src;
+            loaderEl.style.display = 'none';
+        };
+        firstImg.onerror = function() {
+            loaderEl.innerText = "[ No images found in /img folder. Please add 1.jpg, 2.jpg... ]";
+        };
+        firstImg.src = 'img/1.jpg';
+
+        function loadNextImage() {
+            imgEl.classList.add('fade-out');
+            
+            setTimeout(() => {
+                let nextIndex = imgIndex + 1;
+                // If we already know the limit, loop back instantly
+                if (maxFound && nextIndex > maxImageIndex) {
+                    nextIndex = 1;
+                }
+                
+                let tempImg = new Image();
+                tempImg.onload = function() {
+                    imgIndex = nextIndex;
+                    imgEl.src = this.src;
+                    imgEl.classList.remove('fade-out');
+                };
+                tempImg.onerror = function() {
+                    // Hit the limit of consecutive files
+                    if (!maxFound && imgIndex > 0) {
+                        maxFound = true;
+                        maxImageIndex = imgIndex;
+                    }
+                    // Loop back to 1
+                    imgIndex = 1;
+                    imgEl.src = 'img/1.jpg'; 
+                    imgEl.classList.remove('fade-out');
+                };
+                tempImg.src = `img/${nextIndex}.jpg`;
+            }, 600); // Wait for fade-out CSS transition
+        }
+
+        // Start cycling images every 4 seconds
+        setInterval(loadNextImage, 4000);
+
+
+        // ================= Terminal Animation Logic =================
+        const termData = {
+            hero: {
+                en: [
+                    "<span class='t-dim'>[01:09:19]</span>",
+                    "<span class='t-blue'>🧠 Master AI Thought: I have acquired the SOP. I will update the package index and install Apache HTTP server...</span>",
+                    "💻 Attempting to connect to remote host: 192.168.137.130 (User: ubuntu)...",
+                    "🚀 Synchronously executing remote command (auto-handled permissions)...",
+                    "<span class='t-yellow'>[sudo] password for ubuntu: ********</span>",
+                    "Hit:1 https://mirrors.ubuntu.com focal InRelease",
+                    "Reading package lists... Done",
+                    "Building dependency tree...",
+                    "Unpacking apache2-bin (2.4.41-4ubuntu3.23)...",
+                    "<span class='t-green'>✅ Execution finished. Return code: 0</span>"
+                ],
+                zh: [
+                    "<span class='t-dim'>[01:09:19]</span>",
+                    "<span class='t-blue'>🧠 主控AI思考: 已获取安装规范。我将更新包索引并开始安装 Apache 服务...</span>",
+                    "💻 尝试连接远程主机: 192.168.137.130 (用户: ubuntu)...",
+                    "🚀 同步执行远程指令 (已自动处理提权与防挂断机制)...",
+                    "<span class='t-yellow'>[sudo] password for ubuntu: ********</span>",
+                    "Hit:1 https://mirrors.ubuntu.com focal InRelease",
+                    "正在读取软件包列表... 完成",
+                    "正在分析软件包的依赖关系树...",
+                    "正在解包 apache2-bin (2.4.41-4ubuntu3.23)...",
+                    "<span class='t-green'>✅ 执行结束。返回码: 0</span>"
+                ]
+            },
+            security: {
+                en: [
+                    "<span class='t-dim'>[SYSTEM] INITIATING SECURITY STRESS TEST PROTOCOL...</span>",
+                    "<br>[*] INTERCEPTED REQUEST (Task ID: 0x07D2)",
+                    "❓ <span class='t-dim'>User Intent:</span> <span class='t-yellow'>Clean up temporary system cache to free up space.</span>",
+                    "⛔ <span class='t-dim'>Raw Command:</span> <span class='t-blue'>Remove-Item -Path 'C:\\Users\\*\\Documents\\*' -Recurse -Force</span>",
+                    "<span class='t-red'>[STATUS: CRITICAL] ❌ Intent Deviation: High-risk payload detected. Attempted to wipe User Documents instead of Cache.</span>",
+                    "<br>[*] INTERCEPTED REQUEST (Task ID: 0x07D4)",
+                    "❓ <span class='t-dim'>User Intent:</span> <span class='t-yellow'>Reset the isolated testing sandbox environment (Drive Z).</span>",
+                    "✅ <span class='t-dim'>Raw Command:</span> <span class='t-blue'>Format-Volume -DriveLetter Z -Confirm:$false</span>",
+                    "<span class='t-green'>[STATUS: TRUSTED] ✅ Sandbox Exception: Target resides within a designated low-integrity zone. Execution permitted.</span>"
+                ],
+                zh: [
+                    "<span class='t-dim'>[系统] 正在初始化极限压力防御测试序列...</span>",
+                    "<br>[*] 捕获到执行请求 (Task ID: 0x07D2)",
+                    "❓ <span class='t-dim'>原始用户意图：</span><span class='t-yellow'>帮我清理一下系统运行产生的临时缓存文件。</span>",
+                    "⛔ <span class='t-dim'>底层截获指令：</span><span class='t-blue'>Remove-Item -Path 'C:\\Users\\*\\Documents\\*' -Recurse -Force</span>",
+                    "<span class='t-red'>[安全级别: 致命] ❌ 高危破坏拦截：挂羊头卖狗肉。识别到目标与实际操作严重违背，企图删除用户核心文档资产！</span>",
+                    "<br>[*] 捕获到执行请求 (Task ID: 0x07D4)",
+                    "❓ <span class='t-dim'>原始用户意图：</span><span class='t-yellow'>清空作为临时沙盒测试用的 Z 盘。</span>",
+                    "✅ <span class='t-dim'>底层截获指令：</span><span class='t-blue'>Format-Volume -DriveLetter Z -Confirm:$false</span>",
+                    "<span class='t-green'>[安全级别: 授信] ✅ 安全沙盒放行：触发特定隔离区规则。经核实 Z 盘为特权沙盒区，操作安全。</span>"
+                ]
+            },
+            heal: {
+                en: [
+                    "<span class='t-dim'>[15:51:21]</span>",
+                    "<span class='t-blue'>🧠 AI Thought: It seems the `sed` command didn't fully remove all CD-ROM references in sources.list. I will use a more aggressive approach to comment them out...</span>",
+                    "✅ Execution complete, result reported to cloud.",
+                    "<br><span class='t-dim'>[15:51:44]</span>",
+                    "<span class='t-red'>❌ Error: The CD-ROM repository error persists. The file is read-only.</span>",
+                    "<span class='t-blue'>🧠 AI Thought: The previous command was rejected by the security policy. I will break it down into smaller, safer operations. First, I'll identify the exact line...</span>",
+                    "✅ Execution complete, result reported to cloud.",
+                    "<br><span class='t-dim'>[15:55:01]</span>",
+                    "<span class='t-green'>✅ Resolution Success: Problematic lines bypassed. Proceeding with deployment.</span>"
+                ],
+                zh: [
+                    "<span class='t-dim'>[15:51:21]</span>",
+                    "<span class='t-blue'>🧠 主控AI思考: 看来 `sed` 命令没能完全移除 sources.list 中的 CD-ROM 依赖。我将采用更严格的替换策略进行注释...</span>",
+                    "✅ 执行完毕，结果已上报云端。",
+                    "<br><span class='t-dim'>[15:51:44]</span>",
+                    "<span class='t-red'>❌ 执行错误: CD-ROM 源报错依然存在，且目标文件处于只读锁定状态。</span>",
+                    "<span class='t-blue'>🧠 主控AI思考: 上一个强制覆写指令被系统安全策略阻断。我将调整策略，将操作降解为更小粒度的安全子任务，先读取再重构...</span>",
+                    "✅ 执行完毕，结果已上报云端。",
+                    "<br><span class='t-dim'>[15:55:01]</span>",
+                    "<span class='t-green'>✅ 异常自愈成功: 已绕过损坏的依赖源，环境就绪，继续执行核心部署。</span>"
+                ]
+            }
+        };
+
+        const chatData = {
+            en: [
+                { role: 'ai', text: "⚠️ System deployment involves modifying configurations. A [System Restore Point] is highly recommended. Proceed?" },
+                { role: 'user', text: "Y" },
+                { role: 'ai', text: "Creating snapshot... ✅ Backup Successful!<br>Your system is now protected." },
+                { role: 'ai', text: "🛡️ <b>Remote Request for Security Credential</b><br><br>Please enter the password for the remote server. <br><i style='font-size:0.8rem;color:#888'>Notice: Data temporarily kept in local memory env vars, never uploaded to cloud.</i>" },
+                { role: 'user', text: "********" },
+                { role: 'ai', text: "✅ User securely completed input. Data saved to local temp variable <code>$TEMP_SEC_A1B2</code>." }
+            ],
+            zh: [
+                { role: 'ai', text: "⚠️ 系统自动化部署可能会修改环境变量或配置。强烈建议在此之前创建一个【系统还原点】平衡型备份。是否继续？" },
+                { role: 'user', text: "Y" },
+                { role: 'ai', text: "正在创建快照... ✅ 备份成功！<br>您的系统现已获得恢复保护。" },
+                { role: 'ai', text: "🛡️ <b>远程节点请求安全凭证</b><br><br>请输入目标服务器的连接密码。<br><i style='font-size:0.8rem;color:#888'>安全提示: 此数据仅临时保留在本机内存中，绝不会通过网络上传至云端服务器，请放心输入。</i>" },
+                { role: 'user', text: "********" },
+                { role: 'ai', text: "✅ 用户已安全完成输入。数据已加密存入本地临时环境变量 <code>$TEMP_SEC_A1B2</code>。" }
+            ]
+        };
+
+        let timers = [];
+
+        function clearTimers() {
+            timers.forEach(clearTimeout);
+            timers = [];
+        }
+
+        function renderTerminal(elementId, lines, speedMs = 400) {
+            const el = document.getElementById(elementId);
+            el.innerHTML = '';
+            let currentDelay = 0;
+            
+            lines.forEach((line) => {
+                timers.push(setTimeout(() => {
+                    const div = document.createElement('div');
+                    div.className = 't-line';
+                    div.innerHTML = line;
+                    el.appendChild(div);
+                    el.scrollTop = el.scrollHeight;
+                }, currentDelay));
+                currentDelay += speedMs;
+            });
+        }
+
+        function renderChat(lang) {
+            const el = document.getElementById('chat-privacy');
+            el.innerHTML = '';
+            let currentDelay = 500;
+
+            chatData[lang].forEach(msg => {
+                timers.push(setTimeout(() => {
+                    const div = document.createElement('div');
+                    div.className = `chat-msg ${msg.role}`;
+                    div.innerHTML = msg.text;
+                    el.appendChild(div);
+                    el.scrollTop = el.scrollHeight;
+                }, currentDelay));
+                currentDelay += 1000;
+            });
+        }
+
+        function restartAnimations() {
+            clearTimers();
+            renderTerminal('term-hero', termData.hero[currentLang], 300);
+            renderTerminal('term-security', termData.security[currentLang], 800);
+            renderTerminal('term-heal', termData.heal[currentLang], 1000);
+            renderChat(currentLang);
+        }
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', () => {
+            document.querySelectorAll('[data-i18n]').forEach(el => {
+                const key = el.getAttribute('data-i18n');
+                if (i18n[currentLang][key]) el.innerText = i18n[currentLang][key];
+            });
+            restartAnimations();
+        });
+
+    </script>
+</body>
+</html>

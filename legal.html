@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Legal Center | SecureOps-Agent</title>
+    <style>
+        :root {
+            --bg-dark: #0a0a0a;
+            --bg-panel: #111111;
+            --text-main: #ededed;
+            --text-muted: #888888;
+            --accent: #33bbff;
+            --border-color: #333;
+        }
+
+        body, html { margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; background-color: var(--bg-dark); color: var(--text-main); line-height: 1.8; }
+        
+        * { box-sizing: border-box; }
+        a { color: var(--accent); text-decoration: none; }
+        a:hover { text-decoration: underline; }
+        
+        .container { max-width: 800px; margin: 0 auto; padding: 40px 20px; }
+
+        /* Navigation */
+        nav { display: flex; justify-content: space-between; align-items: center; padding-bottom: 30px; border-bottom: 1px solid var(--border-color); margin-bottom: 40px; }
+        .logo { font-size: 1.5rem; font-weight: 700; color: #fff; text-decoration: none !important;}
+        .btn-lang { background: transparent; border: 1px solid #555; color: white; padding: 6px 12px; border-radius: 6px; cursor: pointer; font-size: 0.9rem; transition: 0.2s; }
+        .btn-lang:hover { border-color: var(--text-main); }
+
+        /* Content Styles */
+        h1 { font-size: 2.5rem; margin-bottom: 10px; }
+        h2 { font-size: 1.8rem; margin-top: 50px; padding-bottom: 10px; border-bottom: 1px solid var(--border-color); color: #fff;}
+        h3 { font-size: 1.3rem; margin-top: 30px; color: #ddd; }
+        p, li { color: #bbbbbb; font-size: 1.05rem; }
+        ul { margin-bottom: 20px; }
+        
+        .last-updated { color: var(--text-muted); font-size: 0.9rem; font-style: italic; margin-bottom: 40px;}
+
+        .policy-section { margin-bottom: 80px; scroll-margin-top: 40px; }
+        
+        .highlight-box { background: rgba(51, 187, 255, 0.1); border-left: 4px solid var(--accent); padding: 15px 20px; margin: 20px 0; border-radius: 0 8px 8px 0;}
+
+        footer { text-align: center; color: var(--text-muted); padding: 40px 0; border-top: 1px solid var(--border-color); margin-top: 60px; font-size: 0.9rem;}
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <nav>
+            <a href="index.html" class="logo">← SecureOps-Agent</a>
+            <button class="btn-lang" onclick="toggleLanguage()" id="langBtn">🌐 中文 / EN</button>
+        </nav>
+
+        <h1 data-i18n="page_title">Legal & Compliance Center</h1>
+        <div class="last-updated" data-i18n="last_updated">Last Updated: May 2026</div>
+
+        <!-- Terms of Service -->
+        <section id="tos" class="policy-section">
+            <h2 data-i18n="tos_title">Terms of Service</h2>
+            <p data-i18n="tos_p1">Welcome to SecureOps-Agent. By accessing our website, purchasing our license keys, or using our automated deployment client, you agree to be bound by these Terms of Service.</p>
+            
+            <h3 data-i18n="tos_h1">1. Nature of Service</h3>
+            <p data-i18n="tos_p2">We provide a "Technical Support & Auto-Deployment Engine". We do NOT sell any open-source software itself. All copyrights of the deployed software belong to their respective original authors. You are paying for the artificial intelligence automation, parsing, and execution services.</p>
+            
+            <h3 data-i18n="tos_h2">2. Acceptable Use Policy (AUP)</h3>
+            <div class="highlight-box">
+                <p data-i18n="tos_p3"><strong>Zero Tolerance for Illegal Activities:</strong> You strictly agree NOT to use our deployment agent to configure, install, or operate any software that violates local laws, including but not limited to: hacking tools, unauthorized network proxies/VPNs, scraping scripts targeting personal privacy, or illicit financial platforms.</p>
+            </div>
+            
+            <h3 data-i18n="tos_h3">3. Limitation of Liability</h3>
+            <p data-i18n="tos_p4">System environments are highly complex. While our agent features self-healing capabilities, we do not guarantee 100% success on all operating systems. Users MUST perform system backups before executing the agent. We are not liable for any data loss, server downtime, or business interruption resulting from the deployment process.</p>
+        </section>
+
+        <!-- Privacy Policy -->
+        <section id="privacy" class="policy-section">
+            <h2 data-i18n="priv_title">Privacy Policy</h2>
+            <p data-i18n="priv_p1">Your privacy and data security are the core foundation of our architecture. We designed our system with a strict Zero-Trust philosophy.</p>
+
+            <h3 data-i18n="priv_h1">1. What We Do NOT Collect (Zero-Trust Credentials)</h3>
+            <p data-i18n="priv_p2">Any sensitive credentials you enter (e.g., SSH passwords, API Keys, Database Root Passwords) are stored ephemerally in local memory variables on your machine. <strong>They are never transmitted to our cloud servers, nor are they written to your local disk.</strong></p>
+
+            <h3 data-i18n="priv_h2">2. What We Collect</h3>
+            <ul>
+                <li data-i18n="priv_li1"><strong>Hardware Fingerprint:</strong> We collect non-reversible hashed MAC addresses and UUIDs strictly to bind your purchased License Key to your device.</li>
+                <li data-i18n="priv_li2"><strong>Execution Logs:</strong> To allow the AI to debug errors (e.g., "Dependency not found"), standard terminal output logs are sent to the cloud via an mTLS-encrypted tunnel.</li>
+            </ul>
+
+            <h3 data-i18n="priv_h3">3. Data Retention</h3>
+            <p data-i18n="priv_p3">Execution contexts are automatically purged from our databases once a deployment task is marked as "Finished" or "Discarded".</p>
+        </section>
+
+        <!-- Refund Policy -->
+        <section id="refund" class="policy-section">
+            <h2 data-i18n="ref_title">Refund Policy</h2>
+            <p data-i18n="ref_p1">Due to the nature of digital license keys and AI token consumption, our refund policy is strictly conditionally based on technical viability.</p>
+
+            <h3 data-i18n="ref_h1">1. Eligibility for Full Refund</h3>
+            <div class="highlight-box">
+                <p data-i18n="ref_p2">If our AI agent completely fails to deploy your requested environment due to unresolved underlying system compatibility issues, and our technical support cannot resolve the block within 48 hours, you are entitled to a <strong>100% Full Refund within 7 days of purchase.</strong></p>
+            </div>
+
+            <h3 data-i18n="ref_h2">2. Non-Refundable Scenarios</h3>
+            <ul>
+                <li data-i18n="ref_li1">"Change of mind" after the license key has been bound to a hardware fingerprint.</li>
+                <li data-i18n="ref_li2">Deployment failure caused by the user refusing to provide basic permissions or deliberately interrupting the script execution.</li>
+                <li data-i18n="ref_li3">If the requested deployment software violates our Acceptable Use Policy (e.g., illegal tools), the service will be terminated without a refund.</li>
+            </ul>
+
+            <h3 data-i18n="ref_h3">3. How to Request a Refund</h3>
+            <p data-i18n="ref_p3">Please send an email to <strong>you_main@outlook.com</strong> with your License Key (KEY-XXXX) and a brief description of the technical failure. Refunds are processed back to the original payment method within 3-5 business days.</p>
+        </section>
+
+        <footer>
+            <div data-i18n="foot_contact">Contact & Support: you_main@outlook.com</div>
+            <div>&copy; 2026 SecureOps-Agent. All rights reserved.</div>
+        </footer>
+    </div>
+
+    <script>
+        // ================= Language Data =================
+        const i18n = {
+            en: {
+                page_title: "Legal & Compliance Center",
+                last_updated: "Last Updated: May 2026",
+                tos_title: "Terms of Service",
+                tos_p1: "Welcome to SecureOps-Agent. By accessing our website, purchasing our license keys, or using our automated deployment client, you agree to be bound by these Terms of Service.",
+                tos_h1: "1. Nature of Service",
+                tos_p2: "We provide a 'Technical Support & Auto-Deployment Engine'. We do NOT sell any open-source software itself. All copyrights of the deployed software belong to their respective original authors. You are paying for the artificial intelligence automation, parsing, and execution services.",
+                tos_h2: "2. Acceptable Use Policy (AUP)",
+                tos_p3: "<strong>Zero Tolerance for Illegal Activities:</strong> You strictly agree NOT to use our deployment agent to configure, install, or operate any software that violates local laws, including but not limited to: hacking tools, unauthorized network proxies/VPNs, scraping scripts targeting personal privacy, or illicit financial platforms.",
+                tos_h3: "3. Limitation of Liability",
+                tos_p4: "System environments are highly complex. While our agent features self-healing capabilities, we do not guarantee 100% success on all operating systems. Users MUST perform system backups before executing the agent. We are not liable for any data loss, server downtime, or business interruption resulting from the deployment process.",
+                
+                priv_title: "Privacy Policy",
+                priv_p1: "Your privacy and data security are the core foundation of our architecture. We designed our system with a strict Zero-Trust philosophy.",
+                priv_h1: "1. What We Do NOT Collect (Zero-Trust Credentials)",
+                priv_p2: "Any sensitive credentials you enter (e.g., SSH passwords, API Keys, Database Root Passwords) are stored ephemerally in local memory variables on your machine. <strong>They are never transmitted to our cloud servers, nor are they written to your local disk.</strong>",
+                priv_h2: "2. What We Collect",
+                priv_li1: "<strong>Hardware Fingerprint:</strong> We collect non-reversible hashed MAC addresses and UUIDs strictly to bind your purchased License Key to your device.",
+                priv_li2: "<strong>Execution Logs:</strong> To allow the AI to debug errors, standard terminal output logs are sent to the cloud via an mTLS-encrypted tunnel.",
+                priv_h3: "3. Data Retention",
+                priv_p3: "Execution contexts are automatically purged from our databases once a deployment task is marked as 'Finished' or 'Discarded'.",
+                
+                ref_title: "Refund Policy",
+                ref_p1: "Due to the nature of digital license keys and AI token consumption, our refund policy is strictly conditionally based on technical viability.",
+                ref_h1: "1. Eligibility for Full Refund",
+                ref_p2: "If our AI agent completely fails to deploy your requested environment due to unresolved underlying system compatibility issues, and our technical support cannot resolve the block within 48 hours, you are entitled to a <strong>100% Full Refund within 7 days of purchase.</strong>",
+                ref_h2: "2. Non-Refundable Scenarios",
+                ref_li1: "'Change of mind' after the license key has been bound to a hardware fingerprint.",
+                ref_li2: "Deployment failure caused by the user refusing to provide basic permissions or deliberately interrupting the script execution.",
+                ref_li3: "If the requested deployment software violates our Acceptable Use Policy (e.g., illegal tools), the service will be terminated without a refund.",
+                ref_h3: "3. How to Request a Refund",
+                ref_p3: "Please send an email to <strong>you_main@outlook.com</strong> with your License Key (KEY-XXXX) and a brief description of the technical failure. Refunds are processed back to the original payment method within 3-5 business days.",
+                
+                foot_contact: "Contact & Support: you_main@outlook.com"
+            },
+            zh: {
+                page_title: "合规与法律中心",
+                last_updated: "最后更新时间：2026年5月",
+                tos_title: "服务条款 (Terms of Service)",
+                tos_p1: "欢迎使用 SecureOps-Agent。访问本网站、购买序列号或运行我们的自动化客户端，即表示您完全同意并遵守以下服务条款。",
+                tos_h1: "1. 服务性质",
+                tos_p2: "我们仅提供「技术支撑与自动化部署引擎」服务。我们绝不倒卖、分发任何开源软件本身，软件著作权归原作者所有。您所支付的费用仅用于购买人工智能的自动化解析与算力执行服务。",
+                tos_h2: "2. 合规使用政策 (AUP)",
+                tos_p3: "<strong>对非法行为零容忍：</strong> 您郑重承诺，绝不利用本部署智能体配置、安装或运行任何违反当地法律法规的程序。包括但不限于：黑客攻击渗透工具、未经授权的翻墙代理/VPN、窃取他人隐私的非法爬虫、以及非法金融/博彩平台。一旦发现，我们将立即封禁授权。",
+                tos_h3: "3. 责任限制",
+                tos_p4: "系统底层环境极其复杂多变。尽管我们的智能体具备强大的异常自愈能力，但我们无法保证在所有操作系统上达成 100% 的成功率。用户在执行部署前【必须】进行数据备份。对于因执行部署引发的数据丢失、宕机或业务中断，本团队免责。",
+                
+                priv_title: "隐私政策 (Privacy Policy)",
+                priv_p1: "隐私与数据安全是我们架构设计的基石。本系统严格遵循“零信任”安全理念。",
+                priv_h1: "1. 我们【绝不】收集的数据（零信任凭证）",
+                priv_p2: "您在本地输入的任何敏感凭证（如 SSH 密码、API 密钥、数据库 Root 密码），均只会在您本机的内存环境变量中短暂流转。<strong>这些敏感数据绝不会通过网络上传至我们的云端，更不会写入您的本地物理硬盘。</strong>",
+                priv_h2: "2. 我们收集的数据",
+                priv_li1: "<strong>硬件指纹：</strong> 我们仅收集经过不可逆 Hash 加密后的 MAC 地址与设备 UUID，专用于将序列号与您的物理设备进行绑定鉴权。",
+                priv_li2: "<strong>执行日志：</strong> 为了让云端 AI 能够识别报错（如“未找到依赖”），终端的普通回显日志将通过 mTLS 强制加密隧道上报云端。",
+                priv_h3: "3. 数据销毁",
+                priv_p3: "一旦您的部署任务被标记为“已完成”或“已废弃”，相关的上下文运行缓存将从我们的数据库中自动清空。",
+                
+                ref_title: "退款政策 (Refund Policy)",
+                ref_p1: "鉴于数字序列号及大模型 Token 算力消耗的特殊性，我们的退款政策严格基于【技术可行性】执行。",
+                ref_h1: "1. 全额退款条件",
+                ref_p2: "如果我们的 AI 智能体因无法克服的底层系统兼容性 BUG，导致您的部署任务彻底失败，且我们的技术支持在 48 小时内仍无法为您提供可行的解决方案，您有权在<strong>购买后的 7 天内申请 100% 全额退款。</strong>",
+                ref_h2: "2. 不支持退款的场景",
+                ref_li1: "序列号已经绑定硬件指纹后的“不想要了/买错了”等无理由退款请求。",
+                ref_li2: "因用户主观拒绝授予运行权限、或强行中途关闭运行终端导致的任务失败。",
+                ref_li3: "若用户要求部署的软件违反了我们的《合规使用政策》（如要求部署非法工具），服务将立即终止，且不予退款。",
+                ref_h3: "3. 退款申请流程",
+                ref_p3: "请使用您的联系邮箱发送邮件至 <strong>you_main@outlook.com</strong>，提供您的序列号（KEY-XXXX）并附带简短的失败报错说明。审核通过后，退款将在 3-5 个工作日内原路返回您的支付账户。",
+                
+                foot_contact: "联系与支持邮箱: you_main@outlook.com"
+            }
+        };
+
+        // Initialize language from localStorage or default to English
+        let currentLang = localStorage.getItem('prefLang') || 'en';
+
+        function toggleLanguage() {
+            currentLang = currentLang === 'en' ? 'zh' : 'en';
+            localStorage.setItem('prefLang', currentLang); // Save preference
+            applyLanguage();
+        }
+
+        function applyLanguage() {
+            document.querySelectorAll('[data-i18n]').forEach(el => {
+                const key = el.getAttribute('data-i18n');
+                if (i18n[currentLang][key]) {
+                    el.innerHTML = i18n[currentLang][key]; // Using innerHTML to support <strong> tags
+                }
+            });
+        }
+
+        // Apply on load
+        document.addEventListener('DOMContentLoaded', applyLanguage);
+
+    </script>
+</body>
+</html>
